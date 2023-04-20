@@ -17,6 +17,84 @@ public class BookLending : SQLBase
     #endregion
 
     #region Book Lending Methods
+    public class BorrowHistorySearch
+    {
+        private bool[] _flag = new bool[4];
+        public bool[] Flag
+        {
+            get { return _flag; }
+            set { _flag = value; }
+        }
+        private string _cardID;
+        public string CardID
+        {
+            get { return _cardID; }
+            set { _cardID = value; }
+        }
+        private string _bookID;
+        public string BookID
+        {
+            get { return _bookID; }
+            set { _bookID = value; }
+        }
+        private string _minBorrowDate;
+        public string MinBorrowDate
+        {
+            get { return _minBorrowDate; }
+            set { _minBorrowDate = value; }
+        }
+        private string _maxBorrowDate;
+        public string MaxBorrowDate
+        {
+            get { return _maxBorrowDate; }
+            set { _maxBorrowDate = value; }
+        }
+        private string _minReturnDate;
+        public string MinReturnDate
+        {
+            get { return _minReturnDate; }
+            set { _minReturnDate = value; }
+        }
+        private string _maxReturnDate;
+        public string MaxReturnDate
+        {
+            get { return _maxReturnDate; }
+            set { _maxReturnDate = value; }
+        }
+    }
+    public class CardSearch
+    {
+        private bool[] _flag = new bool[4];
+        public bool[] Flag
+        {
+            get { return _flag; }
+            set { _flag = value; }
+        }
+        private string _cardID;
+        public string CardID
+        {
+            get { return _cardID; }
+            set { _cardID = value; }
+        }
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+        private string _department;
+        public string Department
+        {
+            get { return _department; }
+            set { _department = value; }
+        }
+        private string _type;
+        public string Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
+    }
     public void LendBook(Borrow borrow)
     {
         SQLController sqlController = SQLController.GetInstance();
@@ -53,31 +131,71 @@ public class BookLending : SQLBase
         }
     }
 
-    public List<Borrow> ShowBorrowHistory(string cardID)
+    public List<Borrow> SearchBorrowHistory(BorrowHistorySearch borrowHistorySearch)
     {
-        SQLController sqlController = SQLController.GetInstance();
-        string command = "SELECT * FROM Borrow WHERE CardID = '{0}'";
-        command = string.Format(command, cardID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
+        if((borrowHistorySearch.MinReturnDate == "NAN" || borrowHistorySearch.MaxReturnDate == "NAN") && !(borrowHistorySearch.MinReturnDate == "NAN" && borrowHistorySearch.MaxReturnDate == "NAN"))
+        {
+            return null;
+        }
         List<Borrow> borrow = new List<Borrow>();
+        bool isFirst = true;
+        SQLController sqlController = SQLController.GetInstance();
+        string command = "SELECT * FROM Borrow";
+        for(int i = 0;i < borrowHistorySearch.Flag.Length;i++)
+        {
+            if (borrowHistorySearch.Flag[i])
+            {
+                if (isFirst)
+                {
+                    command += " WHERE ";
+                    isFirst = false;
+                }
+                else
+                {
+                    command += " AND ";
+                }
+                switch (i)
+                {
+                    case 0:
+                        command += "CardID = '" + borrowHistorySearch.CardID + "'";
+                        break;
+                    case 1:
+                        command += "BookID = '" + borrowHistorySearch.BookID + "'";
+                        break;
+                    case 2:
+                        command += "BorrowDate >= '" + borrowHistorySearch.MinBorrowDate + "'";
+                        break;
+                    case 3:
+                        command += "BorrowDate <= '" + borrowHistorySearch.MaxBorrowDate + "'";
+                        break;
+                    case 4:
+                        command += "ReturnDate >= '" + borrowHistorySearch.MinReturnDate + "'";
+                        break;
+                    case 5:
+                        command += "ReturnDate <= '" + borrowHistorySearch.MaxReturnDate + "'";
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        command += ";";
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            foreach (object obj in objects)
+            List<object> result = sqlController.SelectMultiData(command);
+            foreach (object obj in result)
             {
                 borrow.Add((Borrow)obj);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
         return borrow;
     }
 
-    public List<Borrow> SortBorrowHistory(Borrow.BorrowInfoType type, List<Borrow> borrow)
+    public List<Borrow> SortBorrowHistory(Borrow.BorrowInfoType type, List<Borrow> borrow, bool reverse = false)
     {
         switch (type)
         {
@@ -95,6 +213,10 @@ public class BookLending : SQLBase
                 break;
             default:
                 break;
+        }
+        if (reverse)
+        {
+            borrow.Reverse();
         }
         return borrow;
     }
@@ -193,12 +315,45 @@ public class BookLending : SQLBase
         return cards.Count > 0;
     }
 
-    public List<Card> ShowCards()
+    public List<Card> SearchCards(CardSearch cardSearch)
     {
+        List<Card> cards = new List<Card>();
+        bool isFirst = true;
         SQLController sqlController = SQLController.GetInstance();
         string command = "SELECT * FROM Card";
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
-        List<Card> cards = new List<Card>();
+        for(int i = 0;i < cardSearch.Flag.Length;i++)
+        {
+            if (cardSearch.Flag[i])
+            {
+                if (isFirst)
+                {
+                    command += " WHERE ";
+                    isFirst = false;
+                }
+                else
+                {
+                    command += " AND ";
+                }
+                switch (i)
+                {
+                    case 0:
+                        command += string.Format("CardID = '{0}'", cardSearch.CardID);
+                        break;
+                    case 1:
+                        command += string.Format("CardName = '{0}'", cardSearch.Name);
+                        break;
+                    case 2:
+                        command += string.Format("Department = '{0}'", cardSearch.Department);
+                        break;
+                    case 3:
+                        command += string.Format("CardType = '{0}'", cardSearch.Type);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        command += ";";
         try
         {
             List<object> objects = sqlController.SelectMultiData(command);
@@ -206,15 +361,39 @@ public class BookLending : SQLBase
             {
                 cards.Add((Card)obj);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
-        cards.Sort((x, y) => x.CardId.CompareTo(y.CardId));
         return cards;
     }
+
+    public List<Card> SortCards(Card.CardInfoType type, List<Card> cards, bool reverse = false)
+    {
+        switch (type)
+        {
+            case Card.CardInfoType.CardID:
+                cards.Sort((x, y) => x.CardId.CompareTo(y.CardId));
+                break;
+            case Card.CardInfoType.Name:
+                cards.Sort((x, y) => x.Name.CompareTo(y.Name) == 0 ? x.CardId.CompareTo(y.CardId) : x.Name.CompareTo(y.Name));
+                break;
+            case Card.CardInfoType.Department:
+                cards.Sort((x, y) => x.Department.CompareTo(y.Department) == 0 ? x.CardId.CompareTo(y.CardId) : x.Department.CompareTo(y.Department));
+                break;
+            case Card.CardInfoType.Type:
+                cards.Sort((x, y) => x.Type.CompareTo(y.Type) == 0 ? x.CardId.CompareTo(y.CardId) : x.Type.CompareTo(y.Type));
+                break;
+            default:
+                break;
+        }
+        if (reverse)
+        {
+            cards.Reverse();
+        }
+        return cards;
+    }
+
     #endregion
 }

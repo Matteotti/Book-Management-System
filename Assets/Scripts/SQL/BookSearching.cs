@@ -86,7 +86,7 @@ public class BookSearching : SQLBase
     {
         List<Book> books = new List<Book>();
         bool isFirst = true;
-        string command = "SELECT * FROM BookID WHERE";
+        string command = "SELECT * FROM BookID";
         SQLController sqlController = SQLController.GetInstance();
         for(int i = 0; i < search.Flag.Length; i++)
         {
@@ -94,6 +94,7 @@ public class BookSearching : SQLBase
             {
                 if (isFirst)
                 {
+                    command += " WHERE";
                     isFirst = false;
                 }
                 else
@@ -129,10 +130,6 @@ public class BookSearching : SQLBase
             }
         }
         command += ";";
-        if(isFirst)
-        {
-            return books;
-        }
         try
         {
             List<object> objects = sqlController.SelectMultiData(command);
@@ -144,6 +141,40 @@ public class BookSearching : SQLBase
         catch (System.Exception e)
         {
             Debug.Log(e.Message);
+        }
+        return books;
+    }
+    public List<Book> SortBook(Book.BookInfoType queryType, List<Book> books, bool reverse = false)
+    {
+        switch (queryType)
+        {
+            case Book.BookInfoType.ID:
+                books.Sort((x, y) => x.ID.CompareTo(y.ID));
+                break;
+            case Book.BookInfoType.Title:
+                books.Sort((x, y) => x.Title.CompareTo(y.Title) == 0 ? x.ID.CompareTo(y.ID) : x.Title.CompareTo(y.Title));
+                break;
+            case Book.BookInfoType.Author:
+                books.Sort((x, y) => x.Author.CompareTo(y.Author) == 0 ? x.ID.CompareTo(y.ID) : x.Author.CompareTo(y.Author));
+                break;
+            case Book.BookInfoType.Publisher:
+                books.Sort((x, y) => x.Publisher.CompareTo(y.Publisher) == 0 ? x.ID.CompareTo(y.ID) : x.Publisher.CompareTo(y.Publisher));
+                break;
+            case Book.BookInfoType.PublishYear:
+                books.Sort((x, y) => x.PublishYear.CompareTo(y.PublishYear) == 0 ? x.ID.CompareTo(y.ID) : x.PublishYear.CompareTo(y.PublishYear));
+                break;
+            case Book.BookInfoType.Price:
+                books.Sort((x, y) => x.Price.CompareTo(y.Price) == 0 ? x.ID.CompareTo(y.ID) : x.Price.CompareTo(y.Price));
+                break;
+            case Book.BookInfoType.Stock:
+                books.Sort((x, y) => x.Stock.CompareTo(y.Stock) == 0 ? x.ID.CompareTo(y.ID) : x.Stock.CompareTo(y.Stock));
+                break;
+            default:
+                break;
+        }
+        if (reverse)
+        {
+            books.Reverse();
         }
         return books;
     }

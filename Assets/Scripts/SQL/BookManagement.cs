@@ -17,7 +17,7 @@ public class BookManageMent : SQLBase
     #endregion
 
     #region Book Management Methods
-    public List<Book> SortBook(Book.BookInfoType queryType, List<Book> books)
+    public List<Book> SortBook(Book.BookInfoType queryType, List<Book> books, bool reverse = false)
     {
         switch (queryType)
         {
@@ -44,7 +44,11 @@ public class BookManageMent : SQLBase
                 break;
             default:
                 break;
-        }    
+        }
+        if (reverse)
+        {
+            books.Reverse();
+        }
         return books;
     }
     public void StoreBook(Book book)

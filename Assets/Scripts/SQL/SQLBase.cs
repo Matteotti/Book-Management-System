@@ -113,6 +113,13 @@ public class SQLBase : MonoBehaviour
     }
     public class Card
     {
+    public enum CardInfoType
+    {
+        CardID,
+        Name,
+        Department,
+        Type
+    }
     public enum CardType
     {
         Student,
