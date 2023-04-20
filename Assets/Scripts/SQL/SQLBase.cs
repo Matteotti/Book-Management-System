@@ -65,10 +65,6 @@ public class SQLBase : MonoBehaviour
             get { return _stock; }
             set { _stock = value; }
         }
-        public Book()
-        {
-
-        }
         public Book(string id, string title, string author, string publisher, string publishYear, double price, string category, int stock)
         {
             _ID = id;
@@ -83,6 +79,13 @@ public class SQLBase : MonoBehaviour
     }
     public class Borrow
     {
+        public enum BorrowInfoType
+        {
+            CardID,
+            BookID,
+            BorrowDate,
+            ReturnDate
+        }
         private string _cardID = "000000000000";
         public string CardID
         {
@@ -101,7 +104,7 @@ public class SQLBase : MonoBehaviour
             get { return _borrowDate; }
             set { _borrowDate = value; }
         }
-        private string _returnDate = "0000-00-00";
+        private string _returnDate = "NAN";
         public string ReturnDate
         {
             get { return _returnDate; }

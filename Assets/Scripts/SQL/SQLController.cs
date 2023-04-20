@@ -11,10 +11,32 @@ public class SQLController
     string uid = "sa";
     string pwd = "030811";
     string sqlConnectionInfo;
-    private SqlConnection connect;
+    private SqlConnection _connect;
+    public SqlConnection Connect
+    {
+        get
+        {
+            return _connect;
+        }
+        set
+        {
+            _connect = value;
+        }
+    }
     private SqlCommand command;
     private SqlDataReader reader;
-    private SqlTransaction transaction;
+    private SqlTransaction _transaction;
+    public SqlTransaction Transaction
+    {
+        get
+        {
+            return _transaction;
+        }
+        set
+        {
+            _transaction = value;
+        }
+    }
     #endregion
 
     #region Sinleton
@@ -36,12 +58,11 @@ public class SQLController
     public void OpenDataBase()
     {
         sqlConnectionInfo = "Data Source=" + sqlServer + ";Initial Catalog=" + sqlDatabase + ";User ID=" + uid + ";Password=" + pwd;
-    	connect = new SqlConnection(sqlConnectionInfo);
+    	_connect = new SqlConnection(sqlConnectionInfo);
     	try
         {
-            connect.Open();
-            command = connect.CreateCommand();
-            transaction = connect.BeginTransaction();
+            _connect.Open();
+            command = _connect.CreateCommand();
         }
         catch (SqlException e)
         {
@@ -54,7 +75,7 @@ public class SQLController
     {
         try
         {
-            connect.Close();
+            _connect.Close();
         }
         catch (SqlException e)
         {
@@ -68,19 +89,10 @@ public class SQLController
         {
             command.CommandText = sql;
             command.ExecuteNonQuery();
-            transaction.Commit();
         }
         catch (SqlException e)
         {
             Debug.Log(e.Message);
-            try
-            {
-                transaction.Rollback();
-            }
-            catch (SqlException ex)
-            {
-                Debug.Log(ex.Message);
-            }
         }
     }
 
@@ -96,19 +108,10 @@ public class SQLController
                 result = reader[0];
             }
             reader.Close();
-            transaction.Commit();
         }
         catch (SqlException e)
         {
             Debug.Log(e.Message);
-            try
-            {
-                transaction.Rollback();
-            }
-            catch (SqlException ex)
-            {
-                Debug.Log(ex.Message);
-            }
         }
         return result;
     }
@@ -125,19 +128,10 @@ public class SQLController
                 result.Add(reader[0]);
             }
             reader.Close();
-            transaction.Commit();
         }
         catch (SqlException e)
         {
             Debug.Log(e.Message);
-            try
-            {
-                transaction.Rollback();
-            }
-            catch (SqlException ex)
-            {
-                Debug.Log(ex.Message);
-            }
         }
         return result;
     }
