@@ -100,10 +100,13 @@ public class BookLending : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "INSERT INTO Borrow (BookID, CardID, BorrowDate, ReturnDate) VALUES ('{0}', '{1}', '{2}', '{3}')";
         command = string.Format(command, borrow.BookID, borrow.CardID, borrow.BorrowDate, "NAN");
+        string command2 = "UPDATE Book SET Stock = Stock - 1 WHERE BookID = '{0}'";
+        command2 = string.Format(command2, borrow.BookID);
         sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             sqlController.RunNoneQuery(command);
+            sqlController.RunNoneQuery(command2);
             sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
@@ -118,10 +121,13 @@ public class BookLending : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "UPDATE Borrow SET ReturnDate = '{0}' WHERE CardID = '{1}' AND BookID = '{2}' AND BorrowDate = '{3}'";
         command = string.Format(command, borrow.ReturnDate, borrow.CardID, borrow.BookID, borrow.BorrowDate);
+        string command2 = "UPDATE Book SET Stock = Stock + 1 WHERE BookID = '{0}'";
+        command2 = string.Format(command2, borrow.BookID);
         sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             sqlController.RunNoneQuery(command);
+            sqlController.RunNoneQuery(command2);
             sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
