@@ -1,0 +1,6 @@
+TODO: click button move
+TODO: click button show
+TODO: all small windows
+TODO: log in
+TODO: show results
+TODO: disable other UI
