@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5356609368539609096}
   - component: {fileID: 5356609368539609094}
   - component: {fileID: 5356609368539609097}
+  - component: {fileID: 8926933697739070005}
   m_Layer: 5
   m_Name: LogInTip
   m_TagString: Untagged
@@ -135,6 +136,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8926933697739070005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5356609368539609099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 845d99840e546f14da85fd617d00682c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceralationTime: 0.2
+  stopTime: 1
+  popDistance: 20
+  initSpeed: 2
 --- !u!1 &5356609368827798999
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -25, y: -67}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5356609369226164903
@@ -184,6 +201,7 @@ GameObject:
   - component: {fileID: 5356609369226164900}
   - component: {fileID: 5356609369226164898}
   - component: {fileID: 5356609369226164901}
+  - component: {fileID: 4921770278801301290}
   m_Layer: 5
   m_Name: Bkg
   m_TagString: Untagged
@@ -249,3 +267,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4921770278801301290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5356609369226164903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a885b850ffd49c4abbecefb2d1a7f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceralationTime: 0.2
+  stopTime: 1
+  popDistance: 20
+  initSpeed: 2
+  maxImageTransparency: 0.7
