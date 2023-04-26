@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SQLBase : MonoBehaviour
+public class SQLBase
 {
     public class Book
     {

@@ -146,6 +146,10 @@ public class BookSearching : SQLBase
     }
     public List<Book> SortBook(Book.BookInfoType queryType, List<Book> books, bool reverse = false)
     {
+        if(books == null)
+        {
+            return new List<Book>();
+        }
         switch (queryType)
         {
             case Book.BookInfoType.ID:

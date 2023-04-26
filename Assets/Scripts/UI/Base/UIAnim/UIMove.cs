@@ -35,15 +35,15 @@ public class UIMove : MonoBehaviour
     {
         if (isMoving)
         {
-            if (speed < maxSpeed - acceralation * Time.deltaTime && counter < acceralationTime - Time.deltaTime)
+            if (counter < acceralationTime)
             {
                 speed += acceralation * Time.deltaTime;
             }
-            else if (speed < maxSpeed && counter < sumTime - acceralationTime - Time.deltaTime)
+            else if (counter < sumTime - acceralationTime)
             {
                 speed = maxSpeed;
             }
-            else if (speed > acceralation * Time.deltaTime && counter < sumTime - Time.deltaTime)
+            else if (counter < sumTime)
             {
                 speed -= acceralation * Time.deltaTime;
             }
@@ -53,7 +53,15 @@ public class UIMove : MonoBehaviour
                 speed = 0;
                 isMoving = false;
             }
-            transform.localPosition += direction * speed * Time.deltaTime;
+            float routeRatio = (destination - transform.localPosition).x / direction.x;
+            if(routeRatio == 0)
+                routeRatio = (destination - transform.localPosition).y / direction.y;
+            if(routeRatio == 0)
+                routeRatio = (destination - transform.localPosition).z / direction.z;
+            if(routeRatio > 0.1f)
+                transform.localPosition += direction * speed * Time.deltaTime;
+            else
+                transform.localPosition = destination;
             counter += Time.deltaTime;
         }
     }
