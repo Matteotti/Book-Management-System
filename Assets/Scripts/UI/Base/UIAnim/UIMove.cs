@@ -53,12 +53,10 @@ public class UIMove : MonoBehaviour
                 speed = 0;
                 isMoving = false;
             }
-            float routeRatio = (destination - transform.localPosition).x / direction.x;
-            if(routeRatio == 0)
-                routeRatio = (destination - transform.localPosition).y / direction.y;
-            if(routeRatio == 0)
-                routeRatio = (destination - transform.localPosition).z / direction.z;
-            if(routeRatio > 0.1f)
+            float routeRatio = 0;
+            if (distance != 0)
+                routeRatio = Vector3.Distance(transform.localPosition, destination) / distance;
+            if(routeRatio > 0.005f)
                 transform.localPosition += direction * speed * Time.deltaTime;
             else
                 transform.localPosition = destination;

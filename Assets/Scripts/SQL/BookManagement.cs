@@ -116,8 +116,9 @@ public class BookManageMent : SQLBase
         }
     }
 
-    public void UpdateBookStock(Book book, int deltaStock)
+    public void UpdateBookStock(int bookID, int deltaStock)
     {
+        Book book = GetBook(bookID);
         SQLController sqlController = SQLController.GetInstance();
         if(book.Stock + deltaStock < 0)
         {
@@ -141,11 +142,11 @@ public class BookManageMent : SQLBase
         }
     }
 
-    public void RemoveBook(Book book)
+    public void RemoveBook(string ID)
     {
         SQLController sqlController = SQLController.GetInstance();
         string command = "DELETE FROM Book WHERE BookID = {0}";
-        command = string.Format(command, book.ID);
+        command = string.Format(command, ID);
         sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
@@ -167,7 +168,7 @@ public class BookManageMent : SQLBase
         {
             foreach (Book book in books)
             {
-                RemoveBook(book);
+                RemoveBook(book.ID);
             }
             sqlController.Transaction.Commit();
         }
@@ -181,8 +182,8 @@ public class BookManageMent : SQLBase
     public void ModifyBook(Book book)
     {
         SQLController sqlController = SQLController.GetInstance();
-        string command = "UPDATE Book SET BookName = {0}, Author = {1}, Publisher = {2}, PublishYear = {3}, Price = {4}, Stock = {5} WHERE BookID = {6}";
-        command = string.Format(command, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.Stock, book.ID);
+        string command = "UPDATE Book SET BookName = {0}, Author = {1}, Publisher = {2}, PublishYear = {3}, Price = {4} WHERE BookID = {5}";
+        command = string.Format(command, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.ID);
         sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
@@ -194,6 +195,31 @@ public class BookManageMent : SQLBase
             sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
+    }
+
+    private Book GetBook(int bookID)
+    {
+        List<Book> books = new List<Book>();
+        string command = "SELECT * FROM Book WHERE BookID = {0}";
+        command = string.Format(command, bookID);
+        SQLController sqlController = SQLController.GetInstance();
+        sqlController.Transaction = sqlController.Connect.BeginTransaction();
+        try
+        {
+            List<object> objects = sqlController.SelectMultiData(command);
+            books = new List<Book>();
+            foreach (object obj in objects)
+            {
+                books.Add((Book)obj);
+            }
+            sqlController.Transaction.Commit();
+        }
+        catch (System.Exception e)
+        {
+            sqlController.Transaction.Rollback();
+            Debug.Log(e.Message);
+        }
+        return books[0];
     }
     #endregion
 }
