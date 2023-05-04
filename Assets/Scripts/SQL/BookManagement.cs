@@ -1,6 +1,9 @@
+using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Data;
+using System.Data.SqlClient;
 
 public class BookManageMent : SQLBase
 {
@@ -54,9 +57,8 @@ public class BookManageMent : SQLBase
     public void StoreBook(Book book)
     {
         SQLController sqlController = SQLController.GetInstance();
-        string command = "INSERT INTO Book (BookID, BookName, Author, Publisher, PublishYear, Price, Stock) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})";
-        command = string.Format(command, book.ID, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.Stock);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
+        string command = "INSERT INTO Book (BookID, BookName, Author, Publisher, PublishYear, Price, Category ,Stock) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', {7})";
+        command = string.Format(command, book.ID, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.Category, book.Stock);
         try
         {
             bool isExist = IsBookExist(book);
@@ -65,53 +67,44 @@ public class BookManageMent : SQLBase
                 throw new System.Exception("Book is already exist!");
             }
             sqlController.RunNoneQuery(command);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
     private bool IsBookExist(Book book)
     {
-        List<Book> books = new List<Book>();
         string command = "SELECT * FROM Book WHERE BookID = {0}";
         command = string.Format(command, book.ID);
         SQLController sqlController = SQLController.GetInstance();
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            books = new List<Book>();
-            foreach (object obj in objects)
-            {
-                books.Add((Book)obj);
-            }
-            sqlController.Transaction.Commit();
+            List<object> objects = null;
+            objects = sqlController.SelectMultiData(command);
+            if (objects != null && objects.Count > 0)
+                return true;
+            else
+                return false;
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
+            return false;
         }
-        return books.Count > 0;
     }
     public void StoreBook(List<Book> books)
     {
         SQLController sqlController = SQLController.GetInstance();
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             foreach (Book book in books)
             {
                 StoreBook(book);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -126,17 +119,14 @@ public class BookManageMent : SQLBase
         }
         else
         {
-            string command = "UPDATE Book SET Stock = {0} WHERE BookID = {1}";
+            string command = "UPDATE Book SET Stock = {0} WHERE BookID = '{1}'";
             command = string.Format(command, book.Stock + deltaStock, book.ID);
-            sqlController.Transaction = sqlController.Connect.BeginTransaction();
             try
             {
                 sqlController.RunNoneQuery(command);
-                sqlController.Transaction.Commit();
             }
             catch (System.Exception e)
             {
-                sqlController.Transaction.Rollback();
                 Debug.Log(e.Message);
             }
         }
@@ -147,15 +137,12 @@ public class BookManageMent : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "DELETE FROM Book WHERE BookID = {0}";
         command = string.Format(command, ID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             sqlController.RunNoneQuery(command);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -163,18 +150,15 @@ public class BookManageMent : SQLBase
     public void RemoveBook(List<Book> books)
     {
         SQLController sqlController = SQLController.GetInstance();
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             foreach (Book book in books)
             {
                 RemoveBook(book.ID);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -182,17 +166,14 @@ public class BookManageMent : SQLBase
     public void ModifyBook(Book book)
     {
         SQLController sqlController = SQLController.GetInstance();
-        string command = "UPDATE Book SET BookName = {0}, Author = {1}, Publisher = {2}, PublishYear = {3}, Price = {4} WHERE BookID = {5}";
-        command = string.Format(command, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.ID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
+        string command = "UPDATE Book SET BookName = '{0}', Author = '{1}', Publisher = '{2}', PublishYear = '{3}', Price = {4}, Category = '{5}' WHERE BookID = '{6}'";
+        command = string.Format(command, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.Category, book.ID);
         try
         {
             sqlController.RunNoneQuery(command);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -203,7 +184,6 @@ public class BookManageMent : SQLBase
         string command = "SELECT * FROM Book WHERE BookID = {0}";
         command = string.Format(command, bookID);
         SQLController sqlController = SQLController.GetInstance();
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             List<object> objects = sqlController.SelectMultiData(command);
@@ -212,11 +192,9 @@ public class BookManageMent : SQLBase
             {
                 books.Add((Book)obj);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
         return books[0];

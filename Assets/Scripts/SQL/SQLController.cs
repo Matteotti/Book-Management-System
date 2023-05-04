@@ -25,18 +25,6 @@ public class SQLController
     }
     private SqlCommand command;
     private SqlDataReader reader;
-    private SqlTransaction _transaction;
-    public SqlTransaction Transaction
-    {
-        get
-        {
-            return _transaction;
-        }
-        set
-        {
-            _transaction = value;
-        }
-    }
     #endregion
 
     #region Sinleton
@@ -139,18 +127,12 @@ public class SQLController
     public void InitializeDataBase()
     {
         OpenDataBase();
-        RunNoneQuery("DROP TABLE IF EXISTS 'Book'");
-        RunNoneQuery("DROP TABLE IF EXISTS 'Borrow'");
-        RunNoneQuery("DROP TABLE IF EXISTS 'Card'");
-        RunNoneQuery("CREATE TABLE Book (BookID VARCHAR(20), BookName VARCHAR(20), Author VARCHAR(20), Publisher VARCHAR(20), PublishYear VARCHAR(20), Price decimal(7, 2), Category VARCHAR(20), Stock int,"
-                   + "primary key (BookID)), unique(Category, Publisher, PublishYear, Author, BookName))"
-                   + "engine = innodb default charset = utf8");
-        RunNoneQuery("CREATE TABLE Borrow (BookID VARCHAR(20), CardID VARCHAR(20), BorrowDate VARCHAR(20), ReturnDate VARCHAR(20),"
-                   + "FOREIGN KEY (BookID) REFERENCES Book(BookID), FOREIGN KEY (CardID) REFERENCES Card(CardID))"
-                   + "engine = innodb default charset = utf8");
-        RunNoneQuery("CREATE TABLE Card (CardID VARCHAR(20), CardName VARCHAR(20), CardType VARCHAR(20), Department VARCHAR(20),"
-                   + "primary key ('CardID'), unique('CardName', 'CardType', 'Department'))"
-                   + "engine = innodb default charset = utf8");
+        RunNoneQuery("DROP TABLE Borrow");
+        RunNoneQuery("DROP TABLE Card");
+        RunNoneQuery("DROP TABLE Book");
+        RunNoneQuery("CREATE TABLE Book (BookID VARCHAR(20), BookName VARCHAR(20), Author VARCHAR(20), Publisher VARCHAR(20), PublishYear VARCHAR(20), Price decimal(7, 2), Category VARCHAR(20), Stock int, primary key (BookID), unique(BookName, Author, Publisher, PublishYear))");
+        RunNoneQuery("CREATE TABLE Card (CardID VARCHAR(20), CardName VARCHAR(20), CardType VARCHAR(20), Department VARCHAR(20), primary key (CardID), unique(CardName, CardType, Department))");
+        RunNoneQuery("CREATE TABLE Borrow (BookID VARCHAR(20), CardID VARCHAR(20), BorrowDate VARCHAR(20), ReturnDate VARCHAR(20), FOREIGN KEY (BookID) REFERENCES Book(BookID), FOREIGN KEY (CardID) REFERENCES Card(CardID), unique(BookID, CardID))");
     }
     #endregion 
 }

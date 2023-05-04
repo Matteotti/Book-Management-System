@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.ComponentModel.DataAnnotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,3 +28,5 @@ public class Test : MonoBehaviour
 
 //FIXME: Search function
 //TODO: Add username and password to login
+//TODO: Card
+//TODO: Borrow

@@ -102,16 +102,13 @@ public class BookLending : SQLBase
         command = string.Format(command, borrow.BookID, borrow.CardID, borrow.BorrowDate, "NAN");
         string command2 = "UPDATE Book SET Stock = Stock - 1 WHERE BookID = '{0}'";
         command2 = string.Format(command2, borrow.BookID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             sqlController.RunNoneQuery(command);
             sqlController.RunNoneQuery(command2);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -123,16 +120,13 @@ public class BookLending : SQLBase
         command = string.Format(command, borrow.ReturnDate, borrow.CardID, borrow.BookID, borrow.BorrowDate);
         string command2 = "UPDATE Book SET Stock = Stock + 1 WHERE BookID = '{0}'";
         command2 = string.Format(command2, borrow.BookID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             sqlController.RunNoneQuery(command);
             sqlController.RunNoneQuery(command2);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -232,7 +226,6 @@ public class BookLending : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "INSERT INTO Card (CardID, CardName, Department, CardType) VALUES ('{0}', '{1}', '{2}', '{3}')";
         command = string.Format(command, card.CardId, card.Name, card.Department, card.Type);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             bool isCardExist = IsCardExist(card.CardId);
@@ -241,11 +234,9 @@ public class BookLending : SQLBase
                 throw new System.Exception("Card ID is already exist");
             }
             sqlController.RunNoneQuery(command);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -255,7 +246,6 @@ public class BookLending : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "DELETE FROM Card WHERE CardID = '{0}'";
         command = string.Format(command, cardID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             bool isCardBorrowing = IsCardBorrowing(cardID);
@@ -264,11 +254,9 @@ public class BookLending : SQLBase
                 throw new System.Exception("Card is borrowing book");
             }
             sqlController.RunNoneQuery(command);
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
     }
@@ -279,7 +267,6 @@ public class BookLending : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "SELECT * FROM Borrow WHERE CardID = '{0}' AND ReturnDate = 'NAN'";
         command = string.Format(command, cardID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             List<object> objects = sqlController.SelectMultiData(command);
@@ -287,11 +274,9 @@ public class BookLending : SQLBase
             {
                 borrows.Add((Borrow)obj);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
         return borrows.Count > 0;
@@ -303,7 +288,6 @@ public class BookLending : SQLBase
         SQLController sqlController = SQLController.GetInstance();
         string command = "SELECT * FROM Card WHERE CardID = '{0}'";
         command = string.Format(command, cardID);
-        sqlController.Transaction = sqlController.Connect.BeginTransaction();
         try
         {
             List<object> objects = sqlController.SelectMultiData(command);
@@ -311,11 +295,9 @@ public class BookLending : SQLBase
             {
                 cards.Add((Card)obj);
             }
-            sqlController.Transaction.Commit();
         }
         catch (System.Exception e)
         {
-            sqlController.Transaction.Rollback();
             Debug.Log(e.Message);
         }
         return cards.Count > 0;

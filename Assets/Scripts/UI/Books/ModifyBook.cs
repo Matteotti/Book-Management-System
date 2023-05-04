@@ -14,7 +14,7 @@ public class ModifyBook : UIClick
     public TMP_InputField categoryInputField;
     public Vector3 errorTipsCenterPosition;
     public Vector3 deltaPopPosition;
-    public GameObject errorTipsPrefab;
+    public GameObject errorTipsPrefab, errorTipsPrefabParent;
     public void Modify()
     {
         try
@@ -31,7 +31,7 @@ public class ModifyBook : UIClick
         }
         catch
         {
-            GameObject errorTips = Instantiate(errorTipsPrefab, Camera.main.WorldToScreenPoint(Vector3.zero) + errorTipsCenterPosition, Quaternion.identity, errorTipsPrefab.transform);
+            GameObject errorTips = Instantiate(errorTipsPrefab, Camera.main.WorldToScreenPoint(Vector3.zero) + errorTipsCenterPosition, Quaternion.identity, errorTipsPrefabParent.transform);
             imagePop = errorTips.transform.GetChild(0).GetComponent<UIImagePop>();
             textPop = errorTips.transform.GetChild(1).GetComponent<UITextPop>();
             targetPosition = deltaPopPosition;
