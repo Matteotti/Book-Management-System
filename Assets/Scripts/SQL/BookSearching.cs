@@ -1,3 +1,4 @@
+using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,8 +30,8 @@ public class BookSearching : SQLBase
         private string _ID;
         public string ID
         {
-            get { return ID; }
-            set { ID = value; }
+            get { return _ID; }
+            set { _ID = value; }
         }
         private string _title;
         public string Title
@@ -86,7 +87,7 @@ public class BookSearching : SQLBase
     {
         List<Book> books = new List<Book>();
         bool isFirst = true;
-        string command = "SELECT * FROM BookID";
+        string command = "SELECT * FROM Book";
         SQLController sqlController = SQLController.GetInstance();
         for(int i = 0; i < search.Flag.Length; i++)
         {
@@ -132,10 +133,20 @@ public class BookSearching : SQLBase
         command += ";";
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            foreach (object obj in objects)
+            DataSet result = sqlController.SelectData(command);
+            //FIXME: 
+            foreach (DataRow row in result.Tables[0].Rows)
             {
-                books.Add((Book)obj);
+                Book book = new Book();
+                book.ID = row["BookID"].ToString();
+                book.Title = row["BookName"].ToString();
+                book.Author = row["Author"].ToString();
+                book.Publisher = row["Publisher"].ToString();
+                book.PublishYear = row["PublishYear"].ToString();
+                book.Price = double.Parse(row["Price"].ToString());
+                book.Stock = int.Parse(row["Stock"].ToString());
+                book.Category = row["Category"].ToString();
+                books.Add(book);
             }
         }
         catch (System.Exception e)
@@ -173,10 +184,13 @@ public class BookSearching : SQLBase
             case Book.BookInfoType.Stock:
                 books.Sort((x, y) => x.Stock.CompareTo(y.Stock) == 0 ? x.ID.CompareTo(y.ID) : x.Stock.CompareTo(y.Stock));
                 break;
+            case Book.BookInfoType.Category:
+                books.Sort((x, y) => x.Category.CompareTo(y.Category) == 0 ? x.ID.CompareTo(y.ID) : x.Category.CompareTo(y.Category));
+                break;
             default:
                 break;
         }
-        if (reverse)
+        if (!reverse)
         {
             books.Reverse();
         }

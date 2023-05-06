@@ -20,6 +20,7 @@ public class ShowBookSearchResults : UIClick
         for(int i = 0;i < Mathf.Min(books.Count, 50);i++)
         {
             GameObject info = content.transform.GetChild(i + 1).gameObject;
+            info.SetActive(true);
             info.transform.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = (i+1).ToString();
             info.transform.GetChild(1).GetChild(1).GetComponent<TMP_Text>().text = books[i].ID;
             info.transform.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = books[i].Title;

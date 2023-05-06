@@ -26,7 +26,6 @@ public class Test : MonoBehaviour
     }
 }
 
-//FIXME: Search function
 //TODO: Add username and password to login
 //TODO: Card
 //TODO: Borrow

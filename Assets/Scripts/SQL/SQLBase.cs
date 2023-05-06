@@ -76,6 +76,10 @@ public class SQLBase
             _category = category;
             _stock = stock;
         }
+        public Book()
+        {
+            
+        }
     }
     public class Borrow
     {

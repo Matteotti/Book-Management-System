@@ -124,15 +124,24 @@ public class SQLController
         return result;
     }
 
+    public DataSet SelectData(string sql)
+    {
+        command.CommandText = sql;
+        SqlDataAdapter da = new SqlDataAdapter(command);
+        DataSet ds = new DataSet();
+        da.Fill(ds);
+        return ds;
+    }
+
     public void InitializeDataBase()
     {
         OpenDataBase();
         RunNoneQuery("DROP TABLE Borrow");
         RunNoneQuery("DROP TABLE Card");
         RunNoneQuery("DROP TABLE Book");
-        RunNoneQuery("CREATE TABLE Book (BookID VARCHAR(20), BookName VARCHAR(20), Author VARCHAR(20), Publisher VARCHAR(20), PublishYear VARCHAR(20), Price decimal(7, 2), Category VARCHAR(20), Stock int, primary key (BookID), unique(BookName, Author, Publisher, PublishYear))");
-        RunNoneQuery("CREATE TABLE Card (CardID VARCHAR(20), CardName VARCHAR(20), CardType VARCHAR(20), Department VARCHAR(20), primary key (CardID), unique(CardName, CardType, Department))");
-        RunNoneQuery("CREATE TABLE Borrow (BookID VARCHAR(20), CardID VARCHAR(20), BorrowDate VARCHAR(20), ReturnDate VARCHAR(20), FOREIGN KEY (BookID) REFERENCES Book(BookID), FOREIGN KEY (CardID) REFERENCES Card(CardID), unique(BookID, CardID))");
+        RunNoneQuery("CREATE TABLE Book (BookID VARCHAR(50), BookName VARCHAR(50), Author VARCHAR(50), Publisher VARCHAR(50), PublishYear VARCHAR(50), Price decimal(7, 2), Category VARCHAR(50), Stock int, primary key (BookID), unique(BookName, Author, Publisher, PublishYear))");
+        RunNoneQuery("CREATE TABLE Card (CardID VARCHAR(50), CardName VARCHAR(50), CardType VARCHAR(50), Department VARCHAR(50), primary key (CardID), unique(CardName, CardType, Department))");
+        RunNoneQuery("CREATE TABLE Borrow (BookID VARCHAR(50), CardID VARCHAR(50), BorrowDate VARCHAR(50), ReturnDate VARCHAR(50), FOREIGN KEY (BookID) REFERENCES Book(BookID), FOREIGN KEY (CardID) REFERENCES Card(CardID), unique(BookID, CardID))");
     }
     #endregion 
 }
