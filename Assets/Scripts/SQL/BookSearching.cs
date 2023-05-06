@@ -134,7 +134,6 @@ public class BookSearching : SQLBase
         try
         {
             DataSet result = sqlController.SelectData(command);
-            //FIXME: 
             foreach (DataRow row in result.Tables[0].Rows)
             {
                 Book book = new Book();

@@ -117,43 +117,47 @@ public class SQLBase
     }
     public class Card
     {
-    public enum CardInfoType
-    {
-        CardID,
-        Name,
-        Department,
-        Type
-    }
-    public enum CardType
-    {
-        Student,
-        Teacher,
-        Staff,
-        Other
-    }
-    private string cardId;
-    public string CardId
-    {
-        get { return cardId; }
-        set { cardId = value; }
-    }
-    private string name;
-    public string Name
-    {
-        get { return name; }
-        set { name = value; }
-    }
-    private string department;
-    public string Department
-    {
-        get { return department; }
-        set { department = value; }
-    }
-    private CardType type;
-    public CardType Type
-    {
-        get { return type; }
-        set { type = value; }
-    }
+        public enum CardInfoType
+        {
+            CardID,
+            Name,
+            Department,
+            Type
+        }
+        private string _cardId;
+        public string CardId
+        {
+            get { return _cardId; }
+            set { _cardId = value; }
+        }
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+        private string _department;
+        public string Department
+        {
+            get { return _department; }
+            set { _department = value; }
+        }
+        private string _type;
+        public string Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
+        public Card(string cardId, string name, string department, string type)
+        {
+            _cardId = cardId;
+            _name = name;
+            _department = department;
+            _type = type;
+        }
+    
+        public Card()
+        {
+        }
     }
 }

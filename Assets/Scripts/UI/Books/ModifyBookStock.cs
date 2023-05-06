@@ -10,6 +10,7 @@ public class ModifyBookStock : UIClick
     public Vector3 errorTipsCenterPosition;
     public Vector3 deltaPopPosition;
     public GameObject errorTipsPrefab, errorTipsPrefabParent;
+    public SearchForBooks searchForBooks;
     public void Modify()
     {
         try
@@ -17,6 +18,7 @@ public class ModifyBookStock : UIClick
             int bookID = int.Parse(bookIDInputField.text);
             int bookStock = int.Parse(bookStockInputField.text);
             BookManageMent.GetInstance().UpdateBookStock(bookID, bookStock);
+            searchForBooks.StartSearch();
         }
         catch
         {

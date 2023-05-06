@@ -9,12 +9,14 @@ public class DeleteBook : UIClick
     public Vector3 errorTipsCenterPosition;
     public Vector3 deltaPopPosition;
     public GameObject errorTipsPrefab, errorTipsPrefabParent;
+    public SearchForBooks searchForBooks;
     public void Delete()
     {
         try
         {
             string ID = IDInputField.text;
             BookManageMent.GetInstance().RemoveBook(ID);
+            searchForBooks.StartSearch();
         }
         catch
         {

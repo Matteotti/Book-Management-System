@@ -5,7 +5,6 @@ using TMPro;
 
 public class AddBook : UIClick
 {
-    //TODO: AddBook
     public TMP_InputField IDInputField;
     public TMP_InputField titleInputField;
     public TMP_InputField authorInputField;
@@ -17,6 +16,7 @@ public class AddBook : UIClick
     public Vector3 errorTipsCenterPosition;
     public Vector3 deltaPopPosition;
     public GameObject errorTipsPrefab, errorTipsPrefabParent;
+    public SearchForBooks searchForBooks;
     public void Add()
     {
         try
@@ -31,6 +31,7 @@ public class AddBook : UIClick
             int stock = int.Parse(stockInputField.text);
             SQLBase.Book book = new SQLBase.Book(ID, title, author, publisher, publishYear, price, category, stock);
             BookManageMent.GetInstance().StoreBook(book);
+            searchForBooks.StartSearch();
         }
         catch
         {

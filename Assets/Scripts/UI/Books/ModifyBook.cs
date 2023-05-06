@@ -15,6 +15,7 @@ public class ModifyBook : UIClick
     public Vector3 errorTipsCenterPosition;
     public Vector3 deltaPopPosition;
     public GameObject errorTipsPrefab, errorTipsPrefabParent;
+    public SearchForBooks searchForBooks;
     public void Modify()
     {
         try
@@ -28,6 +29,7 @@ public class ModifyBook : UIClick
             float price = float.Parse(priceInputField.text);
             SQLBase.Book book = new SQLBase.Book(ID, title, author, publisher, publishYear, price, category, 0);
             BookManageMent.GetInstance().ModifyBook(book);
+            searchForBooks.StartSearch();
         }
         catch
         {

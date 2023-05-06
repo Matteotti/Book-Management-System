@@ -1,3 +1,4 @@
+using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -261,46 +262,58 @@ public class BookLending : SQLBase
         }
     }
 
+    public void ModifyCard(Card card)
+    {
+        SQLController sqlController = SQLController.GetInstance();
+        string command = "UPDATE Card SET CardName = '{0}', Department = '{1}', CardType = '{2}' WHERE CardID = '{3}'";
+        command = string.Format(command, card.Name, card.Department, card.Type, card.CardId);
+        try
+        {
+            bool isCardExist = IsCardExist(card.CardId);
+            if (!isCardExist)
+            {
+                throw new System.Exception("Card ID is not exist");
+            }
+            sqlController.RunNoneQuery(command);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+    }
+
     private bool IsCardBorrowing(string cardID)
     {
-        List<Borrow> borrows = new List<Borrow>();
+        List<object> objects = new List<object>();
         SQLController sqlController = SQLController.GetInstance();
         string command = "SELECT * FROM Borrow WHERE CardID = '{0}' AND ReturnDate = 'NAN'";
         command = string.Format(command, cardID);
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            foreach (object obj in objects)
-            {
-                borrows.Add((Borrow)obj);
-            }
+            objects = sqlController.SelectMultiData(command);
         }
         catch (System.Exception e)
         {
             Debug.Log(e.Message);
         }
-        return borrows.Count > 0;
+        return objects.Count > 0;
     }
 
     private bool IsCardExist(string cardID)
     {
-        List<Card> cards = new List<Card>();
+        List<object> objects = new List<object>();
         SQLController sqlController = SQLController.GetInstance();
         string command = "SELECT * FROM Card WHERE CardID = '{0}'";
         command = string.Format(command, cardID);
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            foreach (object obj in objects)
-            {
-                cards.Add((Card)obj);
-            }
+            objects = sqlController.SelectMultiData(command);
         }
         catch (System.Exception e)
         {
             Debug.Log(e.Message);
         }
-        return cards.Count > 0;
+        return objects.Count > 0;
     }
 
     public List<Card> SearchCards(CardSearch cardSearch)
@@ -344,10 +357,15 @@ public class BookLending : SQLBase
         command += ";";
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            foreach (object obj in objects)
+            DataSet dataSet = sqlController.SelectData(command);
+            foreach (DataRow row in dataSet.Tables[0].Rows)
             {
-                cards.Add((Card)obj);
+                Card card = new Card();
+                card.CardId = row["CardID"].ToString();
+                card.Name = row["CardName"].ToString();
+                card.Department = row["Department"].ToString();
+                card.Type = row["CardType"].ToString();
+                cards.Add(card);
             }
         }
         catch (System.Exception e)
@@ -359,6 +377,10 @@ public class BookLending : SQLBase
 
     public List<Card> SortCards(Card.CardInfoType type, List<Card> cards, bool reverse = false)
     {
+        if(cards == null)
+        {
+            return new List<Card>();
+        }
         switch (type)
         {
             case Card.CardInfoType.CardID:
@@ -376,7 +398,7 @@ public class BookLending : SQLBase
             default:
                 break;
         }
-        if (reverse)
+        if (!reverse)
         {
             cards.Reverse();
         }

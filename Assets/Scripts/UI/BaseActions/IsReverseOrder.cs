@@ -13,7 +13,9 @@ public class IsReverseOrder : UIClick
     public GameObject descending;
     public GameObject ascending;
     public SQLBase.Book.BookInfoType bookInfoType;
+    public SQLBase.Card.CardInfoType cardInfoType;
     public ShowBookSearchResults showBookSearchResults;
+    public ShowCardSearchResults showCardSearchResults;
     public bool isAscending = true;
     void Start()
     {
@@ -51,7 +53,10 @@ public class IsReverseOrder : UIClick
                 showBookSearchResults.Refresh();
                 break;
             case searchType.Card:
-                //ShowCardSearchResults.instance.Sort(bookInfoType, isAscending);
+                showCardSearchResults.isAscending = isAscending;
+                showCardSearchResults.cardInfoType = cardInfoType;
+                showCardSearchResults.Sort();
+                showCardSearchResults.Refresh();
                 break;
         }
     }

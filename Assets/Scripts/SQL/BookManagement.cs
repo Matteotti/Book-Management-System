@@ -166,7 +166,7 @@ public class BookManageMent : SQLBase
     public void ModifyBook(Book book)
     {
         SQLController sqlController = SQLController.GetInstance();
-        string command = "UPDATE Book SET BookName = '{0}', Author = '{1}', Publisher = '{2}', PublishYear = '{3}', Price = {4}, Category = '{5}' WHERE BookID = '{6}'";
+        string command = "UPDATE Book SET BookName = '{0}', Author = '{1}', Publisher = '{2}', PublishYear = {3}, Price = {4}, Category = '{5}' WHERE BookID = '{6}'";
         command = string.Format(command, book.Title, book.Author, book.Publisher, book.PublishYear, book.Price, book.Category, book.ID);
         try
         {
@@ -181,16 +181,25 @@ public class BookManageMent : SQLBase
     private Book GetBook(int bookID)
     {
         List<Book> books = new List<Book>();
-        string command = "SELECT * FROM Book WHERE BookID = {0}";
+        string command = "SELECT * FROM Book WHERE BookID = '{0}'";
         command = string.Format(command, bookID);
         SQLController sqlController = SQLController.GetInstance();
         try
         {
-            List<object> objects = sqlController.SelectMultiData(command);
-            books = new List<Book>();
-            foreach (object obj in objects)
+            DataSet dataSet = sqlController.SelectData(command);
+            DataTable dataTable = dataSet.Tables[0];
+            foreach (DataRow row in dataTable.Rows)
             {
-                books.Add((Book)obj);
+                Book book = new Book();
+                book.ID = row["BookID"].ToString();
+                book.Title = row["BookName"].ToString();
+                book.Author = row["Author"].ToString();
+                book.Publisher = row["Publisher"].ToString();
+                book.PublishYear = row["PublishYear"].ToString();
+                book.Price = double.Parse(row["Price"].ToString());
+                book.Category = row["Category"].ToString();
+                book.Stock = int.Parse(row["Stock"].ToString());
+                books.Add(book);
             }
         }
         catch (System.Exception e)
