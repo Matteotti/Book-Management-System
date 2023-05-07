@@ -26,12 +26,12 @@ public class SearchForBooks : UIClick
         searchInfo.ID = inputFields[0].text;
         searchInfo.Title = inputFields[1].text;
         searchInfo.Author = inputFields[2].text;
-        searchInfo.Publisher = inputFields[3].text;
-        searchInfo.MinPublishYear = inputFields[4].text;
-        searchInfo.MaxPublishYear = inputFields[5].text;
-        searchInfo.MinPrice = inputFields[6].text;
-        searchInfo.MaxPrice = inputFields[7].text;
-        searchInfo.Category = inputFields[8].text;
+        searchInfo.Category = inputFields[3].text;
+        searchInfo.Publisher = inputFields[4].text;
+        searchInfo.MinPublishYear = inputFields[5].text;
+        searchInfo.MaxPublishYear = inputFields[6].text;
+        searchInfo.MinPrice = inputFields[7].text;
+        searchInfo.MaxPrice = inputFields[8].text;
         showBookSearchResults.books = BookSearching.GetInstance().SearchBook(searchInfo);
         showBookSearchResults.Sort();
         showBookSearchResults.Refresh();

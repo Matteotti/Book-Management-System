@@ -114,6 +114,17 @@ public class SQLBase
             get { return _returnDate; }
             set { _returnDate = value; }
         }
+        public Borrow(string cardID, string bookID, string borrowDate, string returnDate)
+        {
+            _cardID = cardID;
+            _bookID = bookID;
+            _borrowDate = borrowDate;
+            _returnDate = returnDate;
+        }
+        public Borrow()
+        {
+            
+        }
     }
     public class Card
     {

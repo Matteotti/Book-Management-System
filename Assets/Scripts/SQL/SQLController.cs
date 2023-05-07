@@ -141,7 +141,7 @@ public class SQLController
         RunNoneQuery("DROP TABLE Book");
         RunNoneQuery("CREATE TABLE Book (BookID VARCHAR(50), BookName VARCHAR(50), Author VARCHAR(50), Publisher VARCHAR(50), PublishYear VARCHAR(50), Price decimal(7, 2), Category VARCHAR(50), Stock int, primary key (BookID), unique(BookName, Author, Publisher, PublishYear))");
         RunNoneQuery("CREATE TABLE Card (CardID VARCHAR(50), CardName VARCHAR(50), CardType VARCHAR(50), Department VARCHAR(50), primary key (CardID), unique(CardName, CardType, Department))");
-        RunNoneQuery("CREATE TABLE Borrow (BookID VARCHAR(50), CardID VARCHAR(50), BorrowDate VARCHAR(50), ReturnDate VARCHAR(50), FOREIGN KEY (BookID) REFERENCES Book(BookID), FOREIGN KEY (CardID) REFERENCES Card(CardID), unique(BookID, CardID))");
+        RunNoneQuery("CREATE TABLE Borrow (BookID VARCHAR(50), CardID VARCHAR(50), BorrowDate VARCHAR(50), ReturnDate VARCHAR(50), FOREIGN KEY (BookID) REFERENCES Book(BookID), FOREIGN KEY (CardID) REFERENCES Card(CardID))");
     }
     #endregion 
 }

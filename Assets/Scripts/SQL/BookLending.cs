@@ -183,10 +183,15 @@ public class BookLending : SQLBase
         command += ";";
         try
         {
-            List<object> result = sqlController.SelectMultiData(command);
-            foreach (object obj in result)
+            DataSet dataSet = sqlController.SelectData(command);
+            foreach (DataRow dataRow in dataSet.Tables[0].Rows)
             {
-                borrow.Add((Borrow)obj);
+                Borrow temp = new Borrow();
+                temp.CardID = dataRow["CardID"].ToString();
+                temp.BookID = dataRow["BookID"].ToString();
+                temp.BorrowDate = dataRow["BorrowDate"].ToString();
+                temp.ReturnDate = dataRow["ReturnDate"].ToString();
+                borrow.Add(temp);
             }
         }
         catch (System.Exception e)
@@ -198,6 +203,10 @@ public class BookLending : SQLBase
 
     public List<Borrow> SortBorrowHistory(Borrow.BorrowInfoType type, List<Borrow> borrow, bool reverse = false)
     {
+        if (borrow == null)
+        {
+            return new List<Borrow>();
+        }
         switch (type)
         {
             case Borrow.BorrowInfoType.CardID:
@@ -403,6 +412,27 @@ public class BookLending : SQLBase
             cards.Reverse();
         }
         return cards;
+    }
+
+    public string GetBorrowDate(string cardID, string bookID)
+    {
+        string borrowDate = "";
+        SQLController sqlController = SQLController.GetInstance();
+        string command = "SELECT * FROM Borrow WHERE CardID = '{0}' AND BookID = '{1}' AND ReturnDate = 'NAN'";
+        command = string.Format(command, cardID, bookID);
+        try
+        {
+            DataSet dataSet = sqlController.SelectData(command);
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                borrowDate = row["BorrowDate"].ToString();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+        return borrowDate;
     }
 
     #endregion

@@ -114,16 +114,16 @@ public class BookSearching : SQLBase
                         command += " Author LIKE " + search.Author;
                         break;
                     case 3:
-                        command += " Publisher LIKE " + search.Publisher;
+                        command += " Category LIKE " + search.Category;
                         break;
                     case 4:
-                        command += " PublishYear BETWEEN " + search.MinPublishYear.ToString() + " AND " + search.MaxPublishYear.ToString();
+                        command += " Publisher LIKE " + search.Publisher;
                         break;
                     case 5:
-                        command += " Price BETWEEN " + search.MinPrice.ToString() + " AND " + search.MaxPrice.ToString();
+                        command += " PublishYear BETWEEN " + search.MinPublishYear.ToString() + " AND " + search.MaxPublishYear.ToString();
                         break;
                     case 6:
-                        command += " Category LIKE " + search.Category;
+                        command += " Price BETWEEN " + search.MinPrice.ToString() + " AND " + search.MaxPrice.ToString();
                         break;
                     default:
                         break;

@@ -7,15 +7,18 @@ public class IsReverseOrder : UIClick
     public enum searchType
     {
         Book,
-        Card
+        Card,
+        Borrow
     }
     public searchType type;
     public GameObject descending;
     public GameObject ascending;
     public SQLBase.Book.BookInfoType bookInfoType;
     public SQLBase.Card.CardInfoType cardInfoType;
+    public SQLBase.Borrow.BorrowInfoType borrowInfoType;
     public ShowBookSearchResults showBookSearchResults;
     public ShowCardSearchResults showCardSearchResults;
+    public ShowBorrowSearchResult ShowBorrowSearchResult;
     public bool isAscending = true;
     void Start()
     {
@@ -57,6 +60,12 @@ public class IsReverseOrder : UIClick
                 showCardSearchResults.cardInfoType = cardInfoType;
                 showCardSearchResults.Sort();
                 showCardSearchResults.Refresh();
+                break;
+            case searchType.Borrow:
+                ShowBorrowSearchResult.isAscending = isAscending;
+                ShowBorrowSearchResult.borrowInfoType = borrowInfoType;
+                ShowBorrowSearchResult.Sort();
+                ShowBorrowSearchResult.Refresh();
                 break;
         }
     }
